@@ -35,82 +35,175 @@ export default function StoryPhase({ audioEnabled, onComplete }) {
     }, 50);
   };
 
+  const mascotMood =
+    currentPanel.style === 'celebration' ? 'celebrating'
+    : currentPanel.style === 'thinking'  ? 'thinking'
+    : 'idle';
+
   return (
-    <div className="glass-card glass-card--interactive phase-screen phase-screen--narrow" style={{ padding: 'var(--space-md)' }}>
+    <div
+      className="glass-card phase-screen phase-screen--wide"
+      style={{ padding: 'var(--space-sm) var(--space-md)', gap: 0 }}
+    >
+      {/* Top accent band */}
       <div className="phase-band phase-band--story" style={{ marginBottom: 'var(--space-xs)' }} />
 
+      {/* Header row */}
       <div style={{
         display: 'flex',
         justifyContent: 'space-between',
         alignItems: 'center',
         marginBottom: 'var(--space-xs)',
-        flexWrap: 'wrap',
-        gap: '8px'
+        flexShrink: 0,
       }}>
-        <h2 className="text-section-heading" style={{ fontSize: 'clamp(20px, 3vh, 32px)' }}>
-          {currentPanel.character}'s Biscuit Story
+        <h2 style={{
+          fontFamily: "'Fredoka One', Nunito, sans-serif",
+          fontSize: 'clamp(20px, 3.2vh, 34px)',
+          fontWeight: 900,
+          color: '#ffffff',
+          margin: 0,
+          lineHeight: 1.1,
+        }}>
+          <span style={{ color: 'var(--color-story)' }}>{currentPanel.character}</span>'s Biscuit Story
         </h2>
-        <span className="badge-pill" style={{ fontSize: 'clamp(11px, 1.5vh, 14px)', padding: '6px 14px' }}>
-          Panel {currentPanelIndex + 1} of {STORY_PANELS.length}
+
+        {/* Panel counter pill */}
+        <span style={{
+          background: 'rgba(251,146,60,0.18)',
+          border: '1.5px solid rgba(251,146,60,0.45)',
+          color: 'var(--color-story)',
+          fontFamily: "'Fredoka One', Nunito, sans-serif",
+          fontWeight: 900,
+          fontSize: 'clamp(12px,1.6vh,15px)',
+          padding: '4px 14px',
+          borderRadius: '50px',
+          flexShrink: 0,
+        }}>
+          {currentPanelIndex + 1} / {STORY_PANELS.length}
         </span>
       </div>
 
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-xs)' }}>
-        <Mascot
-          mood={
-            currentPanel.style === 'celebration'
-              ? 'celebrating'
-              : currentPanel.style === 'thinking'
-                ? 'thinking'
-                : 'idle'
-          }
-        />
-      </div>
-
+      {/* Main content — image left, text+mascot right */}
       <div style={{
-        marginBottom: 'var(--space-sm)',
-        borderRadius: '24px',
+        display: 'flex',
+        gap: 'var(--space-md)',
+        flex: 1,
+        minHeight: 0,
         overflow: 'hidden',
-        border: '2px solid rgba(255, 255, 255, 0.12)',
-        boxShadow: '0 8px 32px rgba(0, 0, 0, 0.4)',
-        backgroundColor: 'rgba(12, 4, 36, 0.6)',
-        height: 'clamp(130px, 25vh, 230px)',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center'
       }}>
-        <img
-          src={`/assets/${currentPanel.placeholder}`}
-          alt={currentPanel.placeholderLabel}
-          style={{ width: '100%', height: '100%', objectFit: 'contain', padding: '8px' }}
-        />
-      </div>
 
-      <div className="story-quote" style={{ marginBottom: 'var(--space-sm)', padding: 'var(--space-sm)' }}>
-        <p className="text-body" style={{ color: '#ffffff', margin: 0, fontSize: 'var(--fs-body-text)', lineHeight: 1.4 }}>
-          "{currentPanel.text}"
-        </p>
-      </div>
+        {/* LEFT — story image, fills available height */}
+        <div style={{
+          flex: '0 0 48%',
+          borderRadius: '20px',
+          overflow: 'hidden',
+          border: '2px solid rgba(251,146,60,0.25)',
+          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
+          backgroundColor: 'rgba(12,4,36,0.7)',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          minHeight: 0,
+        }}>
+          <img
+            src={`/assets/${currentPanel.placeholder}`}
+            alt={currentPanel.placeholderLabel}
+            style={{
+              width: '100%',
+              height: '100%',
+              objectFit: 'cover',
+              display: 'block',
+            }}
+          />
+        </div>
 
-      <div style={{
-        display: 'flex',
-        justifyContent: 'space-between',
-        alignItems: 'center',
-        gap: '12px',
-        flexWrap: 'wrap'
-      }}>
-        <button
-          onClick={handlePrev}
-          disabled={currentPanelIndex === 0}
-          className="btn-secondary"
-          style={{ padding: '8px 24px', fontSize: '15px' }}
-        >
-          ◀ Back
-        </button>
+        {/* RIGHT — mascot + quote + buttons */}
+        <div style={{
+          flex: 1,
+          display: 'flex',
+          flexDirection: 'column',
+          justifyContent: 'space-between',
+          minHeight: 0,
+          gap: 'var(--space-xs)',
+        }}>
 
-        <button onClick={handleNext} className="btn-gold" style={{ padding: '10px 28px', fontSize: 'var(--fs-button-text)' }}>
-          {currentPanelIndex === STORY_PANELS.length - 1 ? 'Go to Simulation ➔' : 'Next Panel ➔'}
-        </button>
+          {/* Mascot */}
+          <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
+            <Mascot mood={mascotMood} />
+          </div>
+
+          {/* Story quote — large bold text */}
+          <div style={{
+            flex: 1,
+            background: 'rgba(251,146,60,0.10)',
+            borderLeft: '5px solid var(--color-story)',
+            borderRadius: '16px',
+            padding: 'var(--space-sm) var(--space-md)',
+            display: 'flex',
+            alignItems: 'center',
+            minHeight: 0,
+            overflow: 'hidden',
+          }}>
+            <p style={{
+              fontFamily: "'Fredoka One', Nunito, sans-serif",
+              fontSize: 'clamp(15px, 2.2vh, 22px)',
+              fontWeight: 900,
+              color: '#ffffff',
+              margin: 0,
+              lineHeight: 1.5,
+              overflowY: 'auto',
+              maxHeight: '100%',
+            }}>
+              "{currentPanel.text}"
+            </p>
+          </div>
+
+          {/* Navigation buttons */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            flexShrink: 0,
+            gap: '10px',
+          }}>
+            <button
+              onClick={handlePrev}
+              disabled={currentPanelIndex === 0}
+              className="btn-secondary"
+              style={{ padding: '10px 24px', fontSize: 'clamp(14px,1.8vh,17px)' }}
+            >
+              ◀ Back
+            </button>
+
+            {/* Dot progress indicators */}
+            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
+              {STORY_PANELS.map((_, i) => (
+                <div
+                  key={i}
+                  style={{
+                    width: i === currentPanelIndex ? '18px' : '8px',
+                    height: '8px',
+                    borderRadius: '4px',
+                    backgroundColor: i === currentPanelIndex
+                      ? 'var(--color-story)'
+                      : i < currentPanelIndex
+                        ? 'rgba(251,146,60,0.45)'
+                        : 'rgba(255,255,255,0.15)',
+                    transition: 'all 0.25s ease',
+                  }}
+                />
+              ))}
+            </div>
+
+            <button
+              onClick={handleNext}
+              className="btn-gold"
+              style={{ padding: '10px 24px', fontSize: 'clamp(14px,1.8vh,17px)' }}
+            >
+              {currentPanelIndex === STORY_PANELS.length - 1 ? 'Go to Simulation ➔' : 'Next ➔'}
+            </button>
+          </div>
+        </div>
       </div>
     </div>
   );

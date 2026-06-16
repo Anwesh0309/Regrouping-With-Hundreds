@@ -20,11 +20,7 @@ export default function WonderPhase({ audioEnabled, onComplete }) {
     if (!isCounting) return undefined;
     const interval = setInterval(() => {
       setCount((prev) => {
-        if (prev >= 833) {
-          clearInterval(interval);
-          setIsCounting(false);
-          return 833;
-        }
+        if (prev >= 833) { clearInterval(interval); setIsCounting(false); return 833; }
         return prev + 17;
       });
     }, 40);
@@ -37,58 +33,102 @@ export default function WonderPhase({ audioEnabled, onComplete }) {
   };
 
   return (
-    <div className="glass-card glass-card--interactive phase-screen phase-screen--narrow" style={{ padding: 'var(--space-md)' }}>
-      <div className="phase-band phase-band--wonder" style={{ marginBottom: 'var(--space-sm)' }} />
+    <div
+      className="glass-card glass-card--interactive phase-screen phase-screen--narrow"
+      style={{ padding: 'var(--space-md)', gap: 0, justifyContent: 'space-evenly' }}
+    >
+      <div className="phase-band phase-band--wonder" style={{ marginBottom: 'var(--space-xs)' }} />
 
-      <h2 className="text-section-heading" style={{ marginBottom: 'var(--space-xs)' }}>
-        Wonder Hook
+      {/* Title */}
+      <h2 style={{
+        fontFamily: "'Fredoka One', Nunito, sans-serif",
+        fontSize: 'clamp(28px, 4.5vh, 52px)',
+        fontWeight: 900,
+        color: '#ffffff',
+        margin: '0 0 var(--space-xs) 0',
+        textAlign: 'center',
+        lineHeight: 1.1,
+      }}>
+        🔮 Wonder Hook
       </h2>
 
-      <div style={{ display: 'flex', justifyContent: 'center', margin: 'var(--space-xs) 0' }}>
+      {/* Mascot */}
+      <div style={{ display: 'flex', justifyContent: 'center' }}>
         <Mascot mood={isCounting ? 'curious' : count >= 833 ? 'happy' : 'thinking'} />
       </div>
 
+      {/* Counter panel */}
       <div className="glass-panel glass-panel--inset" style={{
-        height: 'clamp(120px, 20vh, 180px)',
         display: 'flex',
         flexDirection: 'column',
         alignItems: 'center',
         justifyContent: 'center',
-        marginBottom: 'var(--space-sm)',
+        padding: 'var(--space-md)',
         borderStyle: 'dashed',
-        padding: 'var(--space-sm)'
+        gap: '4px',
       }}>
         <div style={{
-          fontSize: 'clamp(32px, 5.5vh, 60px)',
-          marginBottom: '2px',
+          fontSize: 'clamp(40px, 7vh, 72px)',
           animation: isCounting ? 'shake 0.3s infinite' : 'none',
-          filter: 'drop-shadow(0 4px 8px rgba(0,0,0,0.3))'
+          filter: 'drop-shadow(0 4px 10px rgba(0,0,0,0.4))',
+          lineHeight: 1,
         }}>
           🧱
         </div>
 
-        <div className="text-number" style={{ textShadow: '0 0 20px rgba(250,204,21,0.35)', fontSize: 'var(--fs-important-numbers)' }}>
+        <div style={{
+          fontFamily: "'Fredoka One', Nunito, sans-serif",
+          fontSize: 'clamp(36px, 6.5vh, 72px)',
+          fontWeight: 900,
+          color: 'var(--color-gold)',
+          textShadow: '0 0 24px rgba(250,204,21,0.5)',
+          lineHeight: 1,
+        }}>
           {count} Blocks!
         </div>
 
-        <p className="text-accent-label" style={{ marginTop: '2px', fontSize: 'clamp(12px, 1.6vh, 16px)' }}>
-          {count < 833 ? 'Counting blocks rapidly...' : 'Total Delivery Counted!'}
+        <p style={{
+          fontFamily: "'Fredoka One', Nunito, sans-serif",
+          fontSize: 'clamp(14px, 2vh, 20px)',
+          fontWeight: 900,
+          color: 'var(--color-wonder)',
+          letterSpacing: '0.05em',
+          textTransform: 'uppercase',
+          margin: 0,
+        }}>
+          {count < 833 ? 'Counting blocks rapidly...' : '✓ Total Delivery Counted!'}
         </p>
       </div>
 
-      <p className="text-body" style={{ maxWidth: '680px', margin: '0 auto var(--space-md) auto', fontSize: 'var(--fs-body-text)', lineHeight: 1.45 }}>
-        Oliver's toy shop has <strong className="text-gold">476</strong> blocks and receives{' '}
-        <strong className="text-gold">357</strong> more. How can we count them up without losing track? Let's find out!
+      {/* Story text */}
+      <p style={{
+        fontFamily: "'Nunito', sans-serif",
+        fontSize: 'clamp(16px, 2.3vh, 22px)',
+        fontWeight: 800,
+        color: '#e2e8f0',
+        textAlign: 'center',
+        margin: '0 auto',
+        maxWidth: '600px',
+        lineHeight: 1.5,
+      }}>
+        Oliver's toy shop has{' '}
+        <strong style={{ color: 'var(--color-gold)', fontSize: '1.2em' }}>476</strong>{' '}
+        blocks and receives{' '}
+        <strong style={{ color: 'var(--color-gold)', fontSize: '1.2em' }}>357</strong>{' '}
+        more. How can we count them without losing track?
       </p>
 
-      <button
-        onClick={handleComplete}
-        disabled={isCounting}
-        className="btn-gold"
-        style={{ padding: '10px 32px', fontSize: 'var(--fs-button-text)' }}
-      >
-        Discover the Story ➔
-      </button>
+      {/* CTA button */}
+      <div style={{ textAlign: 'center' }}>
+        <button
+          onClick={handleComplete}
+          disabled={isCounting}
+          className="btn-gold"
+          style={{ padding: '14px 40px', fontSize: 'clamp(16px,2.4vh,22px)' }}
+        >
+          Discover the Story ➔
+        </button>
+      </div>
     </div>
   );
 }

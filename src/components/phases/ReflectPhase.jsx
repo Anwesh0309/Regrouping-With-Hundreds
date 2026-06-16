@@ -35,47 +35,43 @@ export default function ReflectPhase({ audioEnabled, onComplete, gameState }) {
   const worldScores = gameState?.worldScores ?? Array(10).fill(null);
 
   return (
-    <div className="glass-card glass-card--interactive phase-screen" style={{ maxWidth: '820px', padding: 'var(--space-md)', overflow: 'auto' }}>
+    <div className="glass-card glass-card--interactive phase-screen" style={{ maxWidth: '880px', padding: 'var(--space-sm) var(--space-md)', overflow: 'hidden', gap: 0, justifyContent: 'space-between' }}>
       <div className="phase-band phase-band--reflect" style={{ marginBottom: 'var(--space-xs)' }} />
 
-      <h2 className="text-section-heading" style={{ marginBottom: 'var(--space-xs)', textAlign: 'center' }}>
-        Reflect & Scoreboard
+      <h2 className="text-section-heading" style={{ marginBottom: 'var(--space-xs)', textAlign: 'center', fontSize: 'clamp(24px,3.8vh,42px)' }}>
+        🏆 Reflect &amp; Scoreboard
       </h2>
 
       {/* ── SCOREBOARD ── */}
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '10px', marginBottom: 'var(--space-sm)' }}>
+      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(3, 1fr)', gap: '8px', marginBottom: '8px' }}>
         {[
           { icon: '✨', label: 'Total XP', value: totalXP, color: '#facc15' },
           { icon: '⭐', label: 'Stars', value: `${totalStars} / 30`, color: '#fbbf24' },
           { icon: '🔥', label: 'Best Streak', value: maxStreak, color: '#fb923c' },
         ].map((s) => (
-          <div key={s.label} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '14px', padding: '10px', textAlign: 'center' }}>
-            <div style={{ fontSize: '22px' }}>{s.icon}</div>
-            <div style={{ fontFamily: "'Fredoka One', Nunito, sans-serif", fontSize: '20px', fontWeight: 900, color: s.color }}>{s.value}</div>
-            <div style={{ fontSize: '11px', color: '#94a3b8', fontWeight: 700 }}>{s.label}</div>
+          <div key={s.label} style={{ background: 'rgba(255,255,255,0.05)', border: '1px solid rgba(255,255,255,0.1)', borderRadius: '14px', padding: '8px', textAlign: 'center' }}>
+            <div style={{ fontSize: '20px' }}>{s.icon}</div>
+            <div style={{ fontFamily: "'Fredoka One', Nunito, sans-serif", fontSize: 'clamp(18px,2.8vh,28px)', fontWeight: 900, color: s.color, lineHeight: 1 }}>{s.value}</div>
+            <div style={{ fontSize: 'clamp(11px,1.4vh,13px)', color: '#94a3b8', fontWeight: 800 }}>{s.label}</div>
           </div>
         ))}
       </div>
 
       {/* World scores */}
-      <div style={{ marginBottom: 'var(--space-sm)' }}>
-        <h4 style={{ fontFamily: "'Fredoka One', Nunito, sans-serif", color: '#facc15', fontSize: '13px', letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 8px' }}>
+      <div style={{ marginBottom: '6px' }}>
+        <h4 style={{ fontFamily: "'Fredoka One', Nunito, sans-serif", color: '#facc15', fontSize: 'clamp(11px,1.5vh,14px)', letterSpacing: '0.08em', textTransform: 'uppercase', margin: '0 0 5px' }}>
           World Results
         </h4>
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: '6px' }}>
+        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(10, 1fr)', gap: '4px' }}>
           {worldNames.map((name, i) => {
             const stars = worldStars[i] || 0;
             const score = worldScores[i];
             const played = score !== null;
             return (
-              <div key={i} style={{ background: played ? 'rgba(74,222,128,0.08)' : 'rgba(255,255,255,0.03)', border: `1px solid ${played ? 'rgba(74,222,128,0.25)' : 'rgba(255,255,255,0.07)'}`, borderRadius: '12px', padding: '8px 6px', textAlign: 'center', fontSize: '11px' }}>
-                <div style={{ fontFamily: "'Fredoka One', Nunito, sans-serif", fontWeight: 900, color: played ? '#4ade80' : '#64748b', marginBottom: '2px', lineHeight: 1.2, fontSize: '10px' }}>
-                  W{i + 1}
-                </div>
-                <div style={{ fontSize: '13px' }}>
-                  {played ? ('⭐'.repeat(stars) || '0⭐') : '—'}
-                </div>
-                {played && <div style={{ color: '#94a3b8', fontSize: '10px', marginTop: '2px' }}>{score}/10</div>}
+              <div key={i} style={{ background: played ? 'rgba(74,222,128,0.1)' : 'rgba(255,255,255,0.03)', border: `1px solid ${played ? 'rgba(74,222,128,0.3)' : 'rgba(255,255,255,0.07)'}`, borderRadius: '10px', padding: '5px 2px', textAlign: 'center' }}>
+                <div style={{ fontFamily: "'Fredoka One', Nunito, sans-serif", fontWeight: 900, color: played ? '#4ade80' : '#64748b', fontSize: 'clamp(10px,1.3vh,13px)', lineHeight: 1 }}>W{i + 1}</div>
+                <div style={{ fontSize: 'clamp(10px,1.3vh,13px)', margin: '2px 0' }}>{played ? ('⭐'.repeat(stars) || '0⭐') : '—'}</div>
+                {played && <div style={{ color: '#94a3b8', fontSize: '10px' }}>{score}/10</div>}
               </div>
             );
           })}
@@ -99,37 +95,48 @@ export default function ReflectPhase({ audioEnabled, onComplete, gameState }) {
       )}
 
       {/* Divider */}
-      <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: 'var(--space-xs) 0' }} />
+      <div style={{ height: '1px', background: 'rgba(255,255,255,0.08)', margin: '6px 0' }} />
 
-      {/* Reflection prompt */}
-      <div style={{ display: 'flex', justifyContent: 'center', marginBottom: 'var(--space-xs)' }}>
-        <Mascot mood="curious" />
-      </div>
+      {/* Reflection prompt — row layout to save vertical space */}
+      <div style={{ display: 'flex', gap: 'var(--space-sm)', alignItems: 'center' }}>
+        <div style={{ flexShrink: 0 }}>
+          <Mascot mood="curious" />
+        </div>
 
-      <p className="text-body" style={{ maxWidth: '560px', margin: '0 auto var(--space-sm)', textAlign: 'center', fontSize: 'clamp(13px,1.8vh,16px)' }}>
-        What did you learn about regrouping today? Can you explain it to Leo with an example?
-      </p>
+        <div style={{ flex: 1 }}>
+          <p style={{
+            fontFamily: "'Fredoka One', Nunito, sans-serif",
+            fontSize: 'clamp(14px,1.9vh,18px)',
+            fontWeight: 900,
+            color: '#e2e8f0',
+            margin: '0 0 6px',
+            lineHeight: 1.4,
+          }}>
+            What did you learn about regrouping? Explain it to Leo with an example!
+          </p>
 
-      <div className="glass-panel glass-panel--inset" style={{ marginBottom: 'var(--space-sm)' }}>
-        <textarea
-          value={reflectionText}
-          onChange={(e) => { setReflectionText(e.target.value); if (e.target.value.trim().length >= 10) setErrorMsg(''); }}
-          placeholder="Dear Leo, regrouping is when we..."
-          style={{ width: '100%', height: '120px', border: 'none', outline: 'none', resize: 'none', backgroundColor: 'transparent', fontFamily: "'Nunito', sans-serif", fontSize: 'var(--fs-body-text)', fontWeight: 700, color: '#ffffff', lineHeight: 1.5, boxSizing: 'border-box' }}
-        />
-        <div style={{ textAlign: 'right', fontSize: '11px', color: '#64748b', marginTop: '4px' }}>
-          {reflectionText.length} / 10 min
+          <div className="glass-panel glass-panel--inset" style={{ padding: '10px 14px' }}>
+            <textarea
+              value={reflectionText}
+              onChange={(e) => { setReflectionText(e.target.value); if (e.target.value.trim().length >= 10) setErrorMsg(''); }}
+              placeholder="Dear Leo, regrouping is when we..."
+              style={{ width: '100%', height: '72px', border: 'none', outline: 'none', resize: 'none', backgroundColor: 'transparent', fontFamily: "'Nunito', sans-serif", fontSize: 'clamp(14px,1.9vh,17px)', fontWeight: 800, color: '#ffffff', lineHeight: 1.5, boxSizing: 'border-box' }}
+            />
+            <div style={{ textAlign: 'right', fontSize: '11px', color: '#64748b' }}>
+              {reflectionText.length} / 10 min chars
+            </div>
+          </div>
+
+          {errorMsg && (
+            <p style={{ color: '#f87171', fontSize: '13px', fontWeight: 800, margin: '4px 0 0' }}>
+              ⚠️ {errorMsg}
+            </p>
+          )}
         </div>
       </div>
 
-      {errorMsg && (
-        <p style={{ color: '#f87171', fontSize: '13px', fontWeight: 700, marginBottom: '10px', textAlign: 'center' }}>
-          ⚠️ {errorMsg}
-        </p>
-      )}
-
-      <div style={{ textAlign: 'center' }}>
-        <button onClick={handleSubmit} className="btn-gold" style={{ padding: '12px 36px', fontSize: '16px' }}>
+      <div style={{ textAlign: 'center', marginTop: '8px' }}>
+        <button onClick={handleSubmit} className="btn-gold" style={{ padding: '12px 36px', fontSize: 'clamp(15px,2.2vh,20px)' }}>
           Complete Lesson! 🎉
         </button>
       </div>

@@ -239,8 +239,8 @@ export default function ColumnStation({ audioEnabled, onCompleteStation }) {
             justifyContent: 'center'
           }}>
             <p style={{
-              fontSize: 'clamp(12px, 1.8vh, 15px)',
-              fontWeight: 'bold',
+              fontSize: 'clamp(14px, 2.2vh, 18px)',
+              fontWeight: 900,
               color: '#ffffff',
               margin: '0 0 10px 0',
               lineHeight: '1.4'

@@ -1,5 +1,4 @@
-import { useState } from 'react';
-import { useLocalStorage } from './hooks/useLocalStorage';
+import { useState, useEffect } from 'react';
 import ProgressMap from './components/ProgressMap';
 import IntroScreen from './components/IntroScreen';
 import WonderPhase from './components/phases/WonderPhase';
@@ -10,9 +9,6 @@ import ReflectPhase from './components/phases/ReflectPhase';
 import CompleteScreen from './components/CompleteScreen';
 import { cleanupAudio } from './utils/audioManager';
 import './App.css';
-
-// Bump version to wipe any stale saved progress that skips phases
-const SESSION_KEY = 'intellia_regroup_hundreds_v3';
 
 const INITIAL_STATE = {
   xp: 0,
@@ -32,49 +28,41 @@ const INITIAL_STATE = {
   doubleReGroupFirstTry: false,
 };
 
-// Wipe ALL old session keys so stale phase flags can't bleed through
-['intellia_regroup_hundreds_v1', 'intellia_regroup_hundreds_v2'].forEach((k) => {
-  try { window.localStorage.removeItem(k); } catch { /* ignore */ }
-});
-
-// ── Strict phase order — NEVER skip any phase ───────────────────────────────
-// The sequence is always: intro → wonder → story → simulate → play → reflect → complete
-// Resume logic: find the FIRST incomplete phase and start there.
-// Story is NOT allowed to be skipped even on resume.
-const PHASE_ORDER = ['wonder', 'story', 'simulate', 'play', 'reflect'];
-
-function getResumePhase(phaseComplete) {
-  const pc = phaseComplete ?? {};
-  // Walk the sequence — return the first phase that is NOT yet complete
-  for (const phase of PHASE_ORDER) {
-    if (!pc[phase]) return phase;
-  }
-  return 'complete';
-}
-
-// ────────────────────────────────────────────────────────────────────────────
-
 function App() {
   const [phase, setPhase] = useState('intro');
-  const [gameState, setGameState] = useLocalStorage(SESSION_KEY, INITIAL_STATE);
+  const [gameState, setGameState] = useState(INITIAL_STATE);
   const [audioEnabled, setAudioEnabled] = useState(true);
+
+  // Always reset progress and wipe saved sessions whenever user enters the module
+  useEffect(() => {
+    try {
+      window.localStorage.clear();
+    } catch { /* ignore */ }
+    setGameState(INITIAL_STATE);
+  }, []);
 
   const changePhase = (nextPhase) => {
     cleanupAudio();
+    // If returning to intro, reset all progress fresh for the next run
+    if (nextPhase === 'intro') {
+      try { window.localStorage.clear(); } catch { /* ignore */ }
+      setGameState(INITIAL_STATE);
+    }
     setPhase(nextPhase);
   };
 
-  // "Begin / Resume" — always follows the strict linear order
-  const handleStart = () => {
-    const next = getResumePhase(gameState.phaseComplete);
-    changePhase(next);
+  // Reset session state and return to intro
+  const handleReset = () => {
+    try { window.localStorage.clear(); } catch { /* ignore */ }
+    setGameState(INITIAL_STATE);
+    changePhase('intro');
   };
 
-  const handleReset = () => {
-    if (window.confirm('Reset all lesson progress? This will clear your stars, badges, and XP.')) {
-      setGameState(INITIAL_STATE);
-      changePhase('intro');
-    }
+  // Always start fresh from wonder phase with zero progress
+  const handleStart = () => {
+    try { window.localStorage.clear(); } catch { /* ignore */ }
+    setGameState(INITIAL_STATE);
+    changePhase('wonder');
   };
 
   // ── Phase completion handlers (strict sequence) ──────────────────────────
@@ -129,7 +117,7 @@ function App() {
     changePhase('complete');
   };
 
-  const showHeader      = phase !== 'intro' && phase !== 'complete';
+  const showHeader      = phase !== 'intro';
   const showResetFooter = phase !== 'intro' && phase !== 'complete' && phase !== 'reflect';
 
   return (
@@ -148,49 +136,53 @@ function App() {
         <span className="floating-bg-item" style={{ top: '55%', left: '42%', fontSize: '40px', animationDelay:  '-9s' }}>639</span>
       </div>
 
-      {/* Header */}
-      <header className="glass-header">
-        <button type="button" onClick={() => changePhase('intro')} className="btn-icon-glass">
-          <span style={{ fontSize: '18px' }}>🏠</span>
-          <span>Home</span>
-        </button>
-
-        {showHeader && (
-          <div style={{ flex: 1, margin: '0 16px' }}>
-            <ProgressMap currentPhase={phase} phaseComplete={gameState.phaseComplete} />
+      {/* Header — hidden completely on intro phase */}
+      {showHeader && (
+        <header className="glass-header" style={{
+          display: 'grid',
+          gridTemplateColumns: '120px 1fr 120px',
+          alignItems: 'center',
+          padding: '8px 20px',
+          width: '100%',
+          boxSizing: 'border-box',
+        }}>
+          {/* Left: Home Button */}
+          <div style={{ display: 'flex', justifyContent: 'flex-start' }}>
+            <button type="button" onClick={() => changePhase('intro')} className="btn-icon-glass">
+              <span style={{ fontSize: '18px' }}>🏠</span>
+              <span>Home</span>
+            </button>
           </div>
-        )}
 
-        <div style={{ display: 'flex', alignItems: 'center', gap: '10px' }}>
-          <button
-            type="button"
-            onClick={() => setAudioEnabled(!audioEnabled)}
-            className="btn-icon-glass"
-            title={audioEnabled ? 'Disable Narration' : 'Enable Narration'}
-          >
-            <span>{audioEnabled ? '🔊' : '🔇'}</span>
-            <span>Voice</span>
-          </button>
+          {/* Center: ProgressMap with Mute Button directly beside nav bar */}
+          <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'center' }}>
+            <ProgressMap
+              currentPhase={phase}
+              phaseComplete={gameState.phaseComplete}
+              onSelectPhase={changePhase}
+              audioEnabled={audioEnabled}
+              onToggleAudio={() => setAudioEnabled(!audioEnabled)}
+            />
+          </div>
 
-          <button
-            type="button"
-            onClick={() => { if (window.confirm('Close lesson and return to home?')) changePhase('intro'); }}
-            className="btn-close"
-            title="Close Lesson"
-          >
-            ✕
-          </button>
-        </div>
-      </header>
+          {/* Right: Close Button */}
+          <div style={{ display: 'flex', justifyContent: 'flex-end' }}>
+            <button
+              type="button"
+              onClick={() => { if (window.confirm('Close lesson and return to home?')) changePhase('intro'); }}
+              className="btn-close"
+              title="Close Lesson"
+            >
+              ✕
+            </button>
+          </div>
+        </header>
+      )}
 
       {/* Main content */}
       <main className="app-main">
         {phase === 'intro' && (
-          <IntroScreen
-            onStart={handleStart}
-            hasSavedSession={gameState.xp > 0}
-            onResetSession={handleReset}
-          />
+          <IntroScreen onStart={handleStart} />
         )}
 
         {phase === 'wonder' && (

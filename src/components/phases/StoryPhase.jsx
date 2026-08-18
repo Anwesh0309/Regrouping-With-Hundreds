@@ -35,79 +35,90 @@ export default function StoryPhase({ audioEnabled, onComplete }) {
     }, 50);
   };
 
-  const mascotMood =
-    currentPanel.style === 'celebration' ? 'celebrating'
-    : currentPanel.style === 'thinking'  ? 'thinking'
-    : 'idle';
+  const panelTitle = currentPanel?.title || `${currentPanel?.character || 'Leo'}'s Story`;
+  const panelQuote = currentPanel?.quote || "How many items do we have?";
+  const mascotMsg = currentPanel?.mascotMsg || `Let's help ${currentPanel?.character || 'Leo'} group his items! 🍎`;
 
   return (
-    <div
-      className="glass-card phase-screen phase-screen--wide"
-      style={{ padding: 'var(--space-sm) var(--space-md)', gap: 0 }}
-    >
-      {/* Top accent band */}
-      <div className="phase-band phase-band--story" style={{ marginBottom: 'var(--space-xs)' }} />
+    <div style={{
+      display: 'flex',
+      flexDirection: 'column',
+      alignItems: 'center',
+      justifyContent: 'space-around',
+      height: '100%',
+      width: '100%',
+      padding: '0 var(--space-md)',
+      boxSizing: 'border-box',
+      overflow: 'hidden',
+    }}>
 
-      {/* Header row */}
+      {/* Progress Bar & Counter Header */}
       <div style={{
+        width: '100%',
+        maxWidth: '880px',
         display: 'flex',
-        justifyContent: 'space-between',
         alignItems: 'center',
-        marginBottom: 'var(--space-xs)',
+        gap: '16px',
         flexShrink: 0,
       }}>
-        <h2 style={{
-          fontFamily: "'Fredoka One', Nunito, sans-serif",
-          fontSize: 'clamp(20px, 3.2vh, 34px)',
-          fontWeight: 900,
-          color: '#ffffff',
-          margin: 0,
-          lineHeight: 1.1,
+        {/* Progress track */}
+        <div style={{
+          flex: 1,
+          height: '8px',
+          backgroundColor: 'rgba(255, 255, 255, 0.15)',
+          borderRadius: '10px',
+          overflow: 'hidden',
         }}>
-          <span style={{ color: 'var(--color-story)' }}>{currentPanel.character}</span>'s Biscuit Story
-        </h2>
-
-        {/* Panel counter pill */}
+          <div style={{
+            height: '100%',
+            width: `${((currentPanelIndex + 1) / STORY_PANELS.length) * 100}%`,
+            background: 'linear-gradient(90deg, #f59e0b 0%, #fbbf24 100%)',
+            borderRadius: '10px',
+            transition: 'width 0.3s ease',
+          }} />
+        </div>
+        {/* Step count */}
         <span style={{
-          background: 'rgba(251,146,60,0.18)',
-          border: '1.5px solid rgba(251,146,60,0.45)',
-          color: 'var(--color-story)',
           fontFamily: "'Fredoka One', Nunito, sans-serif",
+          fontSize: 'clamp(15px, 2.2vh, 18px)',
+          color: '#ffffff',
           fontWeight: 900,
-          fontSize: 'clamp(12px,1.6vh,15px)',
-          padding: '4px 14px',
-          borderRadius: '50px',
           flexShrink: 0,
         }}>
           {currentPanelIndex + 1} / {STORY_PANELS.length}
         </span>
       </div>
 
-      {/* Main content — image left, text+mascot right */}
+      {/* Main Glass Card (Split 2-Column) */}
       <div style={{
         display: 'flex',
-        gap: 'var(--space-md)',
-        flex: 1,
-        minHeight: 0,
-        overflow: 'hidden',
+        width: '100%',
+        maxWidth: '880px',
+        backgroundColor: 'rgba(30, 20, 60, 0.55)',
+        border: '1.5px solid rgba(255, 255, 255, 0.15)',
+        borderRadius: '24px',
+        padding: 'clamp(16px, 2.5vh, 26px)',
+        gap: 'clamp(16px, 2.5vh, 26px)',
+        boxSizing: 'border-box',
+        boxShadow: '0 14px 44px rgba(0, 0, 0, 0.4)',
+        flexShrink: 0,
       }}>
-
-        {/* LEFT — story image, fills available height */}
+        {/* Left Column — Story Graphic Image */}
         <div style={{
-          flex: '0 0 48%',
+          flex: '0 0 44%',
           borderRadius: '20px',
           overflow: 'hidden',
-          border: '2px solid rgba(251,146,60,0.25)',
-          boxShadow: '0 8px 32px rgba(0,0,0,0.5)',
-          backgroundColor: 'rgba(12,4,36,0.7)',
+          backgroundColor: 'rgba(12, 4, 36, 0.65)',
+          border: '1.5px solid rgba(255, 255, 255, 0.12)',
           display: 'flex',
           alignItems: 'center',
           justifyContent: 'center',
-          minHeight: 0,
+          boxShadow: '0 10px 28px rgba(0,0,0,0.35)',
+          minHeight: 'clamp(200px, 30vh, 260px)',
         }}>
           <img
             src={`/assets/${currentPanel.placeholder}`}
-            alt={currentPanel.placeholderLabel}
+            alt={currentPanel.placeholderLabel || 'Story graphic'}
             style={{
               width: '100%',
               height: '100%',
@@ -117,93 +128,173 @@ export default function StoryPhase({ audioEnabled, onComplete }) {
           />
         </div>
 
-        {/* RIGHT — mascot + quote + buttons */}
+        {/* Right Column — Details & Quote */}
         <div style={{
           flex: 1,
           display: 'flex',
           flexDirection: 'column',
-          justifyContent: 'space-between',
-          minHeight: 0,
-          gap: 'var(--space-xs)',
+          justifyContent: 'center',
+          gap: 'clamp(10px, 1.6vh, 16px)',
         }}>
-
-          {/* Mascot */}
-          <div style={{ display: 'flex', justifyContent: 'center', flexShrink: 0 }}>
-            <Mascot mood={mascotMood} />
-          </div>
-
-          {/* Story quote — large bold text */}
-          <div style={{
-            flex: 1,
-            background: 'rgba(251,146,60,0.10)',
-            borderLeft: '5px solid var(--color-story)',
-            borderRadius: '16px',
-            padding: 'var(--space-sm) var(--space-md)',
-            display: 'flex',
-            alignItems: 'center',
-            minHeight: 0,
-            overflow: 'hidden',
+          {/* Story Title */}
+          <h3 style={{
+            fontFamily: "'Fredoka One', Nunito, sans-serif",
+            fontSize: 'clamp(22px, 3.8vh, 32px)',
+            fontWeight: 900,
+            color: '#fbbf24',
+            margin: 0,
+            lineHeight: 1.2,
+            textShadow: '0 2px 10px rgba(0,0,0,0.4)',
           }}>
-            <p style={{
+            {panelTitle}
+          </h3>
+
+          {/* Story Paragraph */}
+          <p style={{
+            fontFamily: "'Nunito', sans-serif",
+            fontSize: 'clamp(15px, 2.4vh, 19px)',
+            fontWeight: 800,
+            color: '#ffffff',
+            lineHeight: 1.5,
+            margin: 0,
+          }}>
+            {currentPanel.text}
+          </p>
+
+          {/* Highlight Quote Pill */}
+          <div style={{
+            backgroundColor: 'rgba(20, 14, 45, 0.8)',
+            border: '2px solid rgba(251, 191, 36, 0.5)',
+            borderRadius: '50px',
+            padding: '10px 22px',
+            textAlign: 'center',
+            boxShadow: '0 0 20px rgba(251, 191, 36, 0.2)',
+          }}>
+            <span style={{
               fontFamily: "'Fredoka One', Nunito, sans-serif",
-              fontSize: 'clamp(15px, 2.2vh, 22px)',
+              fontSize: 'clamp(15px, 2.3vh, 18px)',
               fontWeight: 900,
-              color: '#ffffff',
-              margin: 0,
-              lineHeight: 1.5,
-              overflowY: 'auto',
-              maxHeight: '100%',
+              color: '#fbbf24',
+              letterSpacing: '0.02em',
             }}>
-              "{currentPanel.text}"
-            </p>
+              ✨ "{panelQuote}" ✨
+            </span>
           </div>
 
-          {/* Navigation buttons */}
+          {/* Mascot Speech Bubble */}
           <div style={{
             display: 'flex',
-            justifyContent: 'space-between',
             alignItems: 'center',
-            flexShrink: 0,
-            gap: '10px',
+            gap: '12px',
+            marginTop: '4px',
           }}>
-            <button
-              onClick={handlePrev}
-              disabled={currentPanelIndex === 0}
-              className="btn-secondary"
-              style={{ padding: '10px 24px', fontSize: 'clamp(14px,1.8vh,17px)' }}
-            >
-              ◀ Back
-            </button>
-
-            {/* Dot progress indicators */}
-            <div style={{ display: 'flex', gap: '6px', alignItems: 'center' }}>
-              {STORY_PANELS.map((_, i) => (
-                <div
-                  key={i}
-                  style={{
-                    width: i === currentPanelIndex ? '18px' : '8px',
-                    height: '8px',
-                    borderRadius: '4px',
-                    backgroundColor: i === currentPanelIndex
-                      ? 'var(--color-story)'
-                      : i < currentPanelIndex
-                        ? 'rgba(251,146,60,0.45)'
-                        : 'rgba(255,255,255,0.15)',
-                    transition: 'all 0.25s ease',
-                  }}
-                />
-              ))}
+            <div style={{
+              width: '44px',
+              height: '44px',
+              borderRadius: '50%',
+              backgroundColor: '#fbbf24',
+              display: 'flex',
+              alignItems: 'center',
+              justifyContent: 'center',
+              fontSize: '24px',
+              flexShrink: 0,
+              boxShadow: '0 3px 12px rgba(251, 191, 36, 0.4)',
+              border: '2px solid #ffffff',
+            }}>
+              🦁
             </div>
-
-            <button
-              onClick={handleNext}
-              className="btn-gold"
-              style={{ padding: '10px 24px', fontSize: 'clamp(14px,1.8vh,17px)' }}
-            >
-              {currentPanelIndex === STORY_PANELS.length - 1 ? 'Go to Simulation ➔' : 'Next ➔'}
-            </button>
+            <div style={{
+              backgroundColor: '#ffffff',
+              color: '#0f172a',
+              borderRadius: '16px',
+              padding: '8px 18px',
+              fontFamily: "'Nunito', sans-serif",
+              fontSize: 'clamp(14px, 2vh, 17px)',
+              fontWeight: 900,
+              boxShadow: '0 4px 16px rgba(0,0,0,0.2)',
+              position: 'relative',
+            }}>
+              {mascotMsg}
+            </div>
           </div>
         </div>
+      </div>
+
+      {/* Bottom Controls Bar */}
+      <div style={{
+        display: 'flex',
+        alignItems: 'center',
+        justifyContent: 'space-between',
+        width: '100%',
+        maxWidth: '880px',
+        flexShrink: 0,
+      }}>
+        {/* Back Button */}
+        <button
+          type="button"
+          onClick={handlePrev}
+          disabled={currentPanelIndex === 0}
+          style={{
+            padding: '10px 28px',
+            borderRadius: '50px',
+            backgroundColor: 'rgba(255, 255, 255, 0.1)',
+            border: '1.5px solid rgba(255, 255, 255, 0.2)',
+            color: currentPanelIndex === 0 ? 'rgba(255,255,255,0.3)' : '#ffffff',
+            fontFamily: "'Fredoka One', Nunito, sans-serif",
+            fontSize: 'clamp(15px, 2.2vh, 18px)',
+            fontWeight: 900,
+            cursor: currentPanelIndex === 0 ? 'not-allowed' : 'pointer',
+            transition: 'all 0.2s ease',
+          }}
+        >
+          ← Back
+        </button>
+
+        {/* Pagination Dots */}
+        <div style={{ display: 'flex', gap: '10px', alignItems: 'center' }}>
+          {STORY_PANELS.map((_, i) => (
+            <div
+              key={i}
+              style={{
+                width: i === currentPanelIndex ? '12px' : '10px',
+                height: i === currentPanelIndex ? '12px' : '10px',
+                borderRadius: '50%',
+                backgroundColor: i === currentPanelIndex ? '#fbbf24' : 'rgba(255, 255, 255, 0.3)',
+                boxShadow: i === currentPanelIndex ? '0 0 12px rgba(251, 191, 36, 0.7)' : 'none',
+                transition: 'all 0.25s ease',
+              }}
+            />
+          ))}
+        </div>
+
+        {/* Next Button */}
+        <button
+          type="button"
+          onClick={handleNext}
+          style={{
+            padding: '10px 32px',
+            borderRadius: '50px',
+            background: 'linear-gradient(135deg, #fbbf24 0%, #f59e0b 100%)',
+            border: 'none',
+            color: '#0f172a',
+            fontFamily: "'Fredoka One', Nunito, sans-serif",
+            fontSize: 'clamp(16px, 2.4vh, 20px)',
+            fontWeight: 900,
+            boxShadow: '0 6px 20px rgba(245, 158, 11, 0.5)',
+            cursor: 'pointer',
+            transition: 'transform 0.15s ease, boxShadow 0.15s ease',
+          }}
+          onMouseEnter={(e) => {
+            e.currentTarget.style.transform = 'scale(1.05)';
+            e.currentTarget.style.boxShadow = '0 8px 24px rgba(245, 158, 11, 0.7)';
+          }}
+          onMouseLeave={(e) => {
+            e.currentTarget.style.transform = 'none';
+            e.currentTarget.style.boxShadow = '0 6px 20px rgba(245, 158, 11, 0.5)';
+          }}
+        >
+          {currentPanelIndex === STORY_PANELS.length - 1 ? 'Go to Simulation ➔' : 'Next ➔'}
+        </button>
       </div>
     </div>
   );

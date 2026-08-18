@@ -187,247 +187,575 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
   // Reflect button only shows when ALL 10 worlds have been played at least once
   const allWorldsComplete = gameState.worldScores.every((s) => s !== null);
 
-  /* ── WORLD MAP ────────────────────────────────────────── */
-  const renderWorldMap = () => {
-    const totalStars = gameState.worldStars.reduce((sum, s) => sum + (s || 0), 0);
+  /* ── WORLD MAP SCREEN (Exact design match) ───────────────────────── */
+  const WORLDS = [
+    { id: 0, name: 'Apple Orchard',  icon: '🍎', qRange: 'Questions 1–10' },
+    { id: 1, name: 'Sticker Studio', icon: '⭐', qRange: 'Questions 11–20' },
+    { id: 2, name: 'Toy Town',       icon: '🧸', qRange: 'Questions 21–30' },
+    { id: 3, name: 'Puppy Park',      icon: '🐶', qRange: 'Questions 31–40' },
+    { id: 4, name: 'Pencil Palace',  icon: '✏️', qRange: 'Questions 41–50' },
+    { id: 5, name: 'Group Galaxy',   icon: '🚀', qRange: 'Questions 51–60' },
+    { id: 6, name: 'Basket Bay',     icon: '🧺', qRange: 'Questions 61–70' },
+    { id: 7, name: 'Number Nest',    icon: '🔢', qRange: 'Questions 71–80' },
+    { id: 8, name: 'Rainbow Groups', icon: '🌈', qRange: 'Questions 81–90' },
+    { id: 9, name: 'Division Castle', icon: '🏰', qRange: 'Questions 91–100' },
+  ];
 
+  const renderWorldMap = () => {
     return (
-      <div style={{ padding: '0 var(--space-xs)' }}>
-        <h3 style={{ fontFamily: "'Fredoka One', Nunito, sans-serif", color: '#fff', fontSize: 'var(--fs-section-heading)', margin: '0 0 var(--space-xs) 0', textAlign: 'center' }}>
-          Adventure Map
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        height: '100%',
+        width: '100%',
+        padding: '0 var(--space-xs)',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+      }}>
+        {/* Title */}
+        <h3 style={{
+          fontFamily: "'Fredoka One', Nunito, sans-serif",
+          color: '#ffffff',
+          fontSize: 'clamp(24px, 4vh, 38px)',
+          fontWeight: 900,
+          margin: 0,
+          textAlign: 'center',
+          lineHeight: 1.2,
+          letterSpacing: '0.01em',
+        }}>
+          🎮 Play — Choose Your World!
         </h3>
 
-        {/* Stats bar */}
-        <div style={{ display: 'flex', justifyContent: 'space-around', background: 'rgba(30,20,60,0.4)', border: '2px solid rgba(255,255,255,0.1)', padding: '8px 16px', borderRadius: '16px', marginBottom: 'var(--space-xs)', fontWeight: 900, color: '#fff', fontSize: 'clamp(12px,1.8vh,15px)', fontFamily: "'Fredoka One', Nunito, sans-serif" }}>
-          <span>✨ XP: {gameState.xp}</span>
-          <span>⭐ Stars: {totalStars}</span>
-          <span>🔥 Streak: {gameState.streak}</span>
-        </div>
+        {/* Subtitle */}
+        <p style={{
+          fontFamily: "'Nunito', sans-serif",
+          color: '#94a3b8',
+          fontSize: 'clamp(13px, 1.8vh, 16px)',
+          fontWeight: 700,
+          margin: '4px 0 0 0',
+          textAlign: 'center',
+        }}>
+          Answer questions in each world. Earn stars and XP!
+        </p>
 
-        {/* World grid */}
-        <div style={{ display: 'grid', gridTemplateColumns: 'repeat(5, 1fr)', gap: 'clamp(6px,1.2vh,10px)', margin: 'var(--space-xs) 0' }}>
-          {Array.from({ length: 10 }).map((_, wId) => {
-            const stars = gameState.worldStars[wId] || 0;
-            const isUnlocked = wId === 0 || (gameState.worldStars[wId - 1] !== null && gameState.worldStars[wId - 1] >= 1);
+        {/* 2x5 World Grid */}
+        <div style={{
+          display: 'grid',
+          gridTemplateColumns: 'repeat(5, 1fr)',
+          gap: 'clamp(10px, 1.8vh, 16px)',
+          width: '100%',
+          maxWidth: '920px',
+          margin: 'clamp(16px, 2.5vh, 28px) 0 0 0',
+          boxSizing: 'border-box',
+        }}>
+          {WORLDS.map((w) => {
+            const isUnlocked = w.id === 0 || (gameState.worldStars[w.id - 1] !== null && gameState.worldStars[w.id - 1] >= 1);
             return (
-              <button
-                key={wId}
-                disabled={!isUnlocked}
-                onClick={() => enterWorld(wId)}
+              <div
+                key={w.id}
                 style={{
-                  display: 'flex', flexDirection: 'column', alignItems: 'center',
-                  padding: 'clamp(6px,1.4vh,10px) 4px', borderRadius: '16px',
-                  border: isUnlocked ? '2px solid var(--color-play)' : '2px dashed rgba(255,255,255,0.1)',
-                  backgroundColor: isUnlocked ? 'rgba(74,222,128,0.14)' : 'rgba(30,20,60,0.25)',
-                  color: isUnlocked ? '#fff' : '#94a3b8',
-                  cursor: isUnlocked ? 'pointer' : 'not-allowed',
-                  transition: 'all 0.2s ease',
-                  boxShadow: isUnlocked ? '0 0 10px rgba(74,222,128,0.18)' : 'none',
+                  position: 'relative',
+                  display: 'flex',
+                  flexDirection: 'column',
+                  alignItems: 'center',
+                  justifyContent: 'center',
+                  padding: isUnlocked ? 'clamp(14px, 2.2vh, 22px) 12px clamp(12px, 1.8vh, 18px) 12px' : 'clamp(18px, 2.8vh, 26px) 12px',
+                  borderRadius: '24px',
+                  backgroundColor: isUnlocked ? 'rgba(236, 72, 153, 0.12)' : 'rgba(35, 25, 75, 0.45)',
+                  border: isUnlocked ? '2px solid rgba(244, 114, 182, 0.6)' : '1.5px solid rgba(255, 255, 255, 0.08)',
+                  boxShadow: isUnlocked ? '0 8px 32px rgba(236, 72, 153, 0.3)' : 'none',
+                  boxSizing: 'border-box',
+                  transition: 'transform 0.2s ease, boxShadow 0.2s ease',
+                  minHeight: 'clamp(120px, 20vh, 170px)',
                 }}
-                onMouseEnter={(e) => { if (isUnlocked) { e.currentTarget.style.transform = 'scale(1.04) translateY(-1px)'; e.currentTarget.style.boxShadow = '0 0 18px rgba(74,222,128,0.4)'; }}}
-                onMouseLeave={(e) => { if (isUnlocked) { e.currentTarget.style.transform = 'none'; e.currentTarget.style.boxShadow = '0 0 10px rgba(74,222,128,0.18)'; }}}
               >
-                <div style={{ width: 'clamp(26px,4vh,36px)', height: 'clamp(26px,4vh,36px)', borderRadius: '50%', backgroundColor: isUnlocked ? 'var(--color-play)' : 'rgba(255,255,255,0.1)', color: '#0c0424', display: 'flex', alignItems: 'center', justifyContent: 'center', fontWeight: 950, fontSize: 'clamp(11px,1.6vh,14px)', marginBottom: '4px', fontFamily: "'Fredoka One', Nunito, sans-serif" }}>
-                  {wId + 1}
+                {/* Lock icon for locked worlds */}
+                {!isUnlocked && (
+                  <span style={{
+                    position: 'absolute',
+                    top: '12px',
+                    right: '14px',
+                    fontSize: '13px',
+                    color: 'rgba(255, 255, 255, 0.35)',
+                  }}>
+                    🔒
+                  </span>
+                )}
+
+                {/* World Icon */}
+                <div style={{
+                  fontSize: isUnlocked ? 'clamp(32px, 4.5vh, 42px)' : 'clamp(28px, 4vh, 36px)',
+                  marginBottom: '8px',
+                  filter: isUnlocked ? 'drop-shadow(0 4px 12px rgba(236,72,153,0.4))' : 'grayscale(0.3) opacity(0.6)',
+                  lineHeight: 1,
+                }}>
+                  {w.icon}
                 </div>
-                <div style={{ fontSize: 'clamp(9px,1.2vh,11px)', fontWeight: 900, lineHeight: 1.2, textAlign: 'center', color: isUnlocked ? '#fff' : '#cbd5e1', fontFamily: "'Fredoka One', Nunito, sans-serif", overflow: 'hidden', maxWidth: '100%', padding: '0 2px' }}>
-                  {worldNames[wId].split(' — ')[1] || worldNames[wId]}
+
+                {/* World Name */}
+                <div style={{
+                  fontFamily: "'Fredoka One', Nunito, sans-serif",
+                  fontSize: 'clamp(14px, 2.2vh, 18px)',
+                  fontWeight: 900,
+                  color: isUnlocked ? '#ffffff' : 'rgba(255, 255, 255, 0.45)',
+                  textAlign: 'center',
+                  lineHeight: 1.2,
+                  marginBottom: '3px',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {w.name}
                 </div>
-                <div style={{ fontSize: 'clamp(10px,1.4vh,13px)', marginTop: '3px' }}>
-                  {isUnlocked ? ('⭐'.repeat(stars) || '⏳') : '🔒'}
+
+                {/* Questions Range */}
+                <div style={{
+                  fontFamily: "'Nunito', sans-serif",
+                  fontSize: 'clamp(11px, 1.6vh, 13px)',
+                  fontWeight: 700,
+                  color: isUnlocked ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.25)',
+                  textAlign: 'center',
+                  whiteSpace: 'nowrap',
+                }}>
+                  {w.qRange}
                 </div>
-              </button>
+
+                {/* Unlocked PLAY button */}
+                {isUnlocked && (
+                  <button
+                    type="button"
+                    onClick={() => enterWorld(w.id)}
+                    style={{
+                      display: 'inline-flex',
+                      alignItems: 'center',
+                      justifyContent: 'center',
+                      gap: '6px',
+                      marginTop: '12px',
+                      padding: '8px 26px',
+                      borderRadius: '50px',
+                      background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+                      border: 'none',
+                      color: '#ffffff',
+                      fontFamily: "'Fredoka One', Nunito, sans-serif",
+                      fontWeight: 900,
+                      fontSize: 'clamp(13px, 1.8vh, 15px)',
+                      boxShadow: '0 4px 18px rgba(236, 72, 153, 0.55)',
+                      cursor: 'pointer',
+                      letterSpacing: '0.04em',
+                      transition: 'transform 0.15s ease, boxShadow 0.15s ease',
+                    }}
+                    onMouseEnter={(e) => {
+                      e.currentTarget.style.transform = 'scale(1.05)';
+                      e.currentTarget.style.boxShadow = '0 6px 24px rgba(236, 72, 153, 0.75)';
+                    }}
+                    onMouseLeave={(e) => {
+                      e.currentTarget.style.transform = 'none';
+                      e.currentTarget.style.boxShadow = '0 4px 18px rgba(236, 72, 153, 0.55)';
+                    }}
+                  >
+                    ▶ PLAY
+                  </button>
+                )}
+              </div>
             );
           })}
         </div>
 
         {/* Continue to Reflect — only shown after ALL 10 worlds played */}
-        {allWorldsComplete ? (
-          <div style={{ textAlign: 'center', marginTop: 'var(--space-xs)' }}>
+        {allWorldsComplete && (
+          <div style={{ textAlign: 'center', marginTop: '14px' }}>
             <button
               onClick={onCompletePhase}
               className="btn-gold"
-              style={{ padding: '12px 32px', fontSize: '16px', borderRadius: '50px' }}
+              style={{ padding: '12px 36px', fontSize: '17px', borderRadius: '50px', fontWeight: 900 }}
             >
               Continue to Reflection ➔
             </button>
           </div>
-        ) : (
-          <p style={{ textAlign: 'center', color: '#64748b', fontSize: '13px', marginTop: '8px', fontFamily: "'Nunito', sans-serif", fontWeight: 700 }}>
-            Complete all 10 worlds to unlock Reflection
-          </p>
         )}
       </div>
     );
   };
 
-  /* ── PLAY ARENA ───────────────────────────────────────── */
+  /* ── PLAY ARENA (Exact screenshot design match) ─────────────────────── */
   const renderPlayArena = () => {
     if (!currentQuestion) return null;
 
-    const isMCQ       = currentQuestion.options && currentQuestion.options.length > 0;
-    const isTrueFalse = currentQuestion.type === 'true_false';
-    const isMixed     = currentQuestion.type === 'mixed_challenge';
-    const isBigTwo    = isTrueFalse || isMixed; // 2-option full-width buttons
-    const hintText    = hintsUsed === 0 ? currentQuestion.hint1 : (currentQuestion.hint2 || currentQuestion.hint1);
+    const currentWorldObj = WORLDS[activeWorld] || WORLDS[0];
+    const isMCQ           = currentQuestion.options && currentQuestion.options.length > 0;
+    const isTrueFalse     = currentQuestion.type === 'true_false';
+    const isMixed         = currentQuestion.type === 'mixed_challenge';
+    const hintText        = hintsUsed === 0 ? currentQuestion.hint1 : (currentQuestion.hint2 || currentQuestion.hint1);
 
-    // For true/false questions show 2 big buttons instead of the normal MCQ grid
-    const renderAnswerArea = () => {
-      if (isTrueFalse) {
-        return (
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', margin: '4px 0' }}>
-            {['True', 'False'].map((opt) => (
-              <button
-                key={opt}
-                onClick={() => handleMCQSubmit(opt)}
-                style={{
-                  padding: '14px 40px',
-                  fontSize: 'clamp(16px,2.2vh,22px)',
-                  fontWeight: 900,
-                  borderRadius: '18px',
-                  border: `3px solid ${opt === 'True' ? 'rgba(74,222,128,0.5)' : 'rgba(248,113,113,0.5)'}`,
-                  backgroundColor: opt === 'True' ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontFamily: "'Fredoka One', Nunito, sans-serif",
-                  transition: 'all 0.18s ease',
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.opacity = '0.85'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.opacity = '1'; }}
-              >
-                {opt === 'True' ? '✅ True' : '❌ False'}
-              </button>
-            ))}
-          </div>
-        );
+    // Format equation / question display text inside cyan box
+    const getEquationDisplay = () => {
+      if (currentQuestion.operandA !== undefined && currentQuestion.operandB !== undefined) {
+        const opSymbol = currentQuestion.operation === 'sub' ? '−' : '+';
+        return `${currentQuestion.operandA} ${opSymbol} ${currentQuestion.operandB}`;
       }
+      return currentQuestion.questionText || 'Solve the problem';
+    };
 
-      if (isMixed) {
-        return (
-          <div style={{ display: 'flex', gap: '16px', justifyContent: 'center', margin: '4px 0' }}>
-            {['+', '–'].map((opt) => (
-              <button
-                key={opt}
-                onClick={() => handleMCQSubmit(opt)}
-                style={{
-                  padding: '14px 48px',
-                  fontSize: 'clamp(22px,3vh,30px)',
-                  fontWeight: 900,
-                  borderRadius: '18px',
-                  border: `3px solid ${opt === '+' ? 'rgba(74,222,128,0.5)' : 'rgba(248,113,113,0.5)'}`,
-                  backgroundColor: opt === '+' ? 'rgba(74,222,128,0.12)' : 'rgba(248,113,113,0.12)',
-                  color: '#fff',
-                  cursor: 'pointer',
-                  fontFamily: "'Fredoka One', Nunito, sans-serif",
-                  transition: 'all 0.18s ease',
-                }}
-                onMouseEnter={(e) => { e.currentTarget.style.transform = 'translateY(-2px)'; e.currentTarget.style.opacity = '0.85'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.transform = 'none'; e.currentTarget.style.opacity = '1'; }}
-              >
-                {opt}
-              </button>
-            ))}
-          </div>
-        );
-      }
-
-      if (isMCQ) {
-        return (
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '8px', maxWidth: '480px', margin: '0 auto', width: '100%' }}>
-            {currentQuestion.options.map((option, idx) => (
-              <button
-                key={idx}
-                onClick={() => handleMCQSubmit(option)}
-                style={{ padding: 'clamp(8px,1.6vh,14px) 6px', fontSize: 'clamp(15px,2vh,19px)', fontWeight: 900, borderRadius: '14px', border: '2px solid rgba(255,255,255,0.12)', backgroundColor: 'rgba(30,20,60,0.5)', color: '#fff', cursor: 'pointer', transition: 'all 0.18s ease', fontFamily: "'Fredoka One', Nunito, sans-serif" }}
-                onMouseEnter={(e) => { e.currentTarget.style.borderColor = 'var(--color-play)'; e.currentTarget.style.backgroundColor = 'rgba(74,222,128,0.15)'; e.currentTarget.style.transform = 'translateY(-2px)'; }}
-                onMouseLeave={(e) => { e.currentTarget.style.borderColor = 'rgba(255,255,255,0.12)'; e.currentTarget.style.backgroundColor = 'rgba(30,20,60,0.5)'; e.currentTarget.style.transform = 'none'; }}
-              >
-                {option}
-              </button>
-            ))}
-          </div>
-        );
-      }
-
-      // Column input
-      return (
-        <div style={{ textAlign: 'center' }}>
-          <button onClick={handleColumnSubmit} className="btn-gold" style={{ padding: '10px 28px', fontSize: '15px' }}>
-            Submit Answer ✓
-          </button>
-        </div>
-      );
+    // Format top tag label
+    const getTagLabel = () => {
+      if (currentQuestion.regroupType === 'double') return '+ DOUBLE REGROUP';
+      if (currentQuestion.operation === 'sub') return '− SUBTRACTION';
+      if (currentQuestion.type === 'missing_addend') return '? MISSING DIGITS';
+      return '+ REGROUPING';
     };
 
     return (
-      <div style={{ padding: '0 var(--space-xs)', display: 'flex', flexDirection: 'column', gap: 'var(--space-xs)' }}>
+      <div style={{
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'space-around',
+        height: '100%',
+        width: '100%',
+        padding: '0 var(--space-xs)',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+      }}>
 
-        {/* Arena header */}
-        <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', borderBottom: '1.5px solid rgba(255,255,255,0.08)', paddingBottom: '6px' }}>
-          <button onClick={() => { cleanupAudio(); setMode('map'); }} className="btn-secondary" style={{ padding: '5px 12px', fontSize: '13px', borderRadius: '14px' }}>
-            ◀ Map
-          </button>
-          <span style={{ fontWeight: 900, color: '#cbd5e1', fontSize: '14px', fontFamily: "'Fredoka One', Nunito, sans-serif" }}>
-            Q {currentQIdx + 1} / {questions.length}
-          </span>
-          <div style={{ display: 'flex', gap: '10px', fontFamily: "'Fredoka One', Nunito, sans-serif", fontSize: '14px' }}>
-            <span style={{ color: 'var(--color-story)' }}>🔥 {gameState.streak}</span>
-            <span style={{ color: 'var(--color-play)' }}>✨ {xpGained} XP</span>
+        {/* Top Header: World Badge & Stats */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '680px',
+          flexShrink: 0,
+        }}>
+          {/* Back to Map button + World Name Badge */}
+          <div style={{
+            position: 'relative',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            marginBottom: '6px',
+          }}>
+            <button
+              onClick={() => { cleanupAudio(); setMode('map'); }}
+              style={{
+                position: 'absolute',
+                left: 0,
+                padding: '6px 14px',
+                borderRadius: '50px',
+                backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                border: '1px solid rgba(255, 255, 255, 0.15)',
+                color: '#ffffff',
+                fontFamily: "'Fredoka One', Nunito, sans-serif",
+                fontSize: '13px',
+                fontWeight: 800,
+                cursor: 'pointer',
+              }}
+            >
+              ◀ Map
+            </button>
+
+            {/* World Badge */}
+            <div style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '6px',
+              padding: '6px 22px',
+              borderRadius: '50px',
+              background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
+              color: '#ffffff',
+              fontFamily: "'Fredoka One', Nunito, sans-serif",
+              fontSize: '14px',
+              fontWeight: 900,
+              boxShadow: '0 4px 14px rgba(236,72,153,0.45)',
+            }}>
+              <span>⭐</span>
+              <span>{currentWorldObj.name}</span>
+            </div>
+          </div>
+
+          {/* Stats row: Stars, Hearts, Streak */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            alignItems: 'center',
+            width: '100%',
+            padding: '0 8px',
+            margin: '4px 0 6px 0',
+            fontFamily: "'Fredoka One', Nunito, sans-serif",
+            fontSize: '15px',
+            fontWeight: 900,
+            color: '#ffffff',
+          }}>
+            {/* Stars */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ color: '#fbbf24' }}>⭐</span>
+              <span>{gameState.worldStars[activeWorld] || 0}</span>
+            </div>
+
+            {/* Hearts (3 lives) */}
+            <div style={{ display: 'flex', gap: '6px', fontSize: '17px' }}>
+              ❤️ ❤️ ❤️
+            </div>
+
+            {/* Streak */}
+            <div style={{ display: 'flex', alignItems: 'center', gap: '4px' }}>
+              <span style={{ color: '#f97316' }}>🔥</span>
+              <span>{gameState.streak}x</span>
+            </div>
+          </div>
+
+          {/* Progress labels & track */}
+          <div style={{
+            display: 'flex',
+            justifyContent: 'space-between',
+            width: '100%',
+            padding: '0 4px',
+            color: '#94a3b8',
+            fontFamily: "'Fredoka One', Nunito, sans-serif",
+            fontSize: '12px',
+            fontWeight: 800,
+            marginBottom: '4px',
+          }}>
+            <span>Question {currentQIdx + 1}/{questions.length}</span>
+            <span>{Math.round((currentQIdx / questions.length) * 100)}%</span>
+          </div>
+
+          {/* Progress Bar Track */}
+          <div style={{
+            width: '100%',
+            height: '6px',
+            backgroundColor: 'rgba(255, 255, 255, 0.12)',
+            borderRadius: '10px',
+            overflow: 'hidden',
+          }}>
+            <div style={{
+              height: '100%',
+              width: `${(currentQIdx / questions.length) * 100}%`,
+              background: 'linear-gradient(90deg, #a855f7 0%, #ec4899 100%)',
+              borderRadius: '10px',
+              transition: 'width 0.3s ease',
+            }} />
           </div>
         </div>
 
-        {/* Progress bar */}
-        <div style={{ height: '4px', background: 'rgba(255,255,255,0.08)', borderRadius: '4px', overflow: 'hidden' }}>
-          <div style={{ height: '100%', width: `${((currentQIdx) / questions.length) * 100}%`, background: 'var(--color-play)', borderRadius: '4px', transition: 'width 0.3s ease' }} />
+        {/* Main Question Card (Glass Container) */}
+        <div style={{
+          display: 'flex',
+          flexDirection: 'column',
+          alignItems: 'center',
+          width: '100%',
+          maxWidth: '680px',
+          backgroundColor: 'rgba(30, 20, 60, 0.45)',
+          border: '1.5px solid rgba(255, 255, 255, 0.1)',
+          borderRadius: '24px',
+          padding: 'clamp(18px, 2.5vh, 28px)',
+          gap: 'clamp(16px, 2.2vh, 24px)',
+          boxSizing: 'border-box',
+          boxShadow: '0 12px 40px rgba(0, 0, 0, 0.35)',
+          flexShrink: 0,
+        }}>
+          {/* Equation Header Box with Overhanging Tag */}
+          <div style={{
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            width: '100%',
+            position: 'relative',
+          }}>
+            {/* Tag Badge */}
+            <div style={{
+              background: 'linear-gradient(135deg, #f59e0b 0%, #fbbf24 100%)',
+              color: '#0f172a',
+              fontFamily: "'Fredoka One', Nunito, sans-serif",
+              fontWeight: 900,
+              fontSize: 'clamp(11px, 1.5vh, 13px)',
+              padding: '6px 14px',
+              borderRadius: '50px',
+              letterSpacing: '0.04em',
+              boxShadow: '0 4px 12px rgba(245,158,11,0.35)',
+              marginRight: '-14px',
+              zIndex: 2,
+              whiteSpace: 'nowrap',
+            }}>
+              {getTagLabel()}
+            </div>
+
+            {/* Cyan Equation Display Box */}
+            <div style={{
+              backgroundColor: 'rgba(15, 23, 42, 0.75)',
+              border: '2px solid #06b6d4',
+              borderRadius: '20px',
+              padding: '12px 36px 12px 44px',
+              boxShadow: '0 0 24px rgba(6, 182, 212, 0.35)',
+              textAlign: 'center',
+            }}>
+              <span style={{
+                fontFamily: "'Fredoka One', Nunito, sans-serif",
+                fontSize: 'clamp(22px, 3.5vh, 32px)',
+                fontWeight: 900,
+                color: '#38bdf8',
+                letterSpacing: '0.04em',
+              }}>
+                {getEquationDisplay()}
+              </span>
+            </div>
+          </div>
+
+          {/* Question Text (Full sentence) */}
+          <p style={{
+            fontFamily: "'Fredoka One', Nunito, sans-serif",
+            fontSize: 'clamp(14px, 2.2vh, 18px)',
+            fontWeight: 800,
+            color: '#ffffff',
+            margin: 0,
+            textAlign: 'center',
+            lineHeight: 1.35,
+            opacity: 0.95,
+          }}>
+            {currentQuestion.questionText}
+          </p>
+
+          {/* Options Grid (2x2 Grid) */}
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: isTrueFalse || isMixed ? 'repeat(2, 1fr)' : 'repeat(2, 1fr)',
+            gap: '12px',
+            width: '100%',
+            maxWidth: '540px',
+          }}>
+            {isTrueFalse ? (
+              ['True', 'False'].map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => handleMCQSubmit(opt)}
+                  style={{
+                    padding: '14px',
+                    borderRadius: '16px',
+                    backgroundColor: opt === 'True' ? 'rgba(34,197,94,0.18)' : 'rgba(239,68,68,0.18)',
+                    border: `2px solid ${opt === 'True' ? 'rgba(74,222,128,0.5)' : 'rgba(248,113,113,0.5)'}`,
+                    color: '#ffffff',
+                    fontFamily: "'Fredoka One', Nunito, sans-serif",
+                    fontSize: 'clamp(16px, 2.2vh, 20px)',
+                    fontWeight: 900,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {opt === 'True' ? '✅ True' : '❌ False'}
+                </button>
+              ))
+            ) : isMixed ? (
+              ['+', '–'].map((opt) => (
+                <button
+                  key={opt}
+                  type="button"
+                  onClick={() => handleMCQSubmit(opt)}
+                  style={{
+                    padding: '14px',
+                    borderRadius: '16px',
+                    backgroundColor: 'rgba(35, 25, 75, 0.6)',
+                    border: '1.5px solid rgba(255, 255, 255, 0.12)',
+                    color: '#ffffff',
+                    fontFamily: "'Fredoka One', Nunito, sans-serif",
+                    fontSize: 'clamp(24px, 3.5vh, 32px)',
+                    fontWeight: 900,
+                    cursor: 'pointer',
+                    transition: 'all 0.15s ease',
+                  }}
+                >
+                  {opt}
+                </button>
+              ))
+            ) : isMCQ ? (
+              currentQuestion.options.map((option, idx) => (
+                <button
+                  key={idx}
+                  type="button"
+                  onClick={() => handleMCQSubmit(option)}
+                  style={{
+                    padding: 'clamp(12px, 1.8vh, 16px) 10px',
+                    borderRadius: '16px',
+                    backgroundColor: 'rgba(35, 25, 75, 0.6)',
+                    border: '1.5px solid rgba(255, 255, 255, 0.12)',
+                    color: '#ffffff',
+                    fontFamily: "'Fredoka One', Nunito, sans-serif",
+                    fontSize: 'clamp(15px, 2.2vh, 19px)',
+                    fontWeight: 900,
+                    textAlign: 'center',
+                    cursor: 'pointer',
+                    transition: 'transform 0.15s ease, backgroundColor 0.15s ease, borderColor 0.15s ease',
+                  }}
+                  onMouseEnter={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(236, 72, 153, 0.2)';
+                    e.currentTarget.style.borderColor = 'rgba(244, 114, 182, 0.6)';
+                    e.currentTarget.style.transform = 'translateY(-2px)';
+                  }}
+                  onMouseLeave={(e) => {
+                    e.currentTarget.style.backgroundColor = 'rgba(35, 25, 75, 0.6)';
+                    e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.12)';
+                    e.currentTarget.style.transform = 'none';
+                  }}
+                >
+                  {option}
+                </button>
+              ))
+            ) : (
+              <div style={{ gridColumn: 'span 2', textAlign: 'center' }}>
+                <button onClick={handleColumnSubmit} className="btn-gold" style={{ padding: '10px 28px', fontSize: '15px' }}>
+                  Submit Answer ✓
+                </button>
+              </div>
+            )}
+          </div>
         </div>
 
-        {/* Question text */}
-        <p style={{ fontSize: 'clamp(14px,2vh,18px)', fontWeight: 900, color: '#fff', margin: 0, textAlign: 'center', lineHeight: 1.4, fontFamily: "'Fredoka One', Nunito, sans-serif" }}>
-          {currentQuestion.questionText}
-        </p>
-
-        {/* Column diagram — only for column-type questions, not true/false or mixed */}
-        {!isBigTwo && currentQuestion.operandA !== undefined && (
-          <div style={{ display: 'flex', justifyContent: 'center' }}>
-            <ColumnLayout
-              operandA={currentQuestion.operandA}
-              operandB={currentQuestion.operandB}
-              mode={currentQuestion.operation}
-              userDigits={isMCQ ? { h: '', t: '', o: '' } : userDigits}
-              onDigitInput={isMCQ ? null : (col, val) => setUserDigits((prev) => ({ ...prev, [col]: val }))}
-              missingDigits={isMCQ ? { h: false, t: false, o: false } : { h: !userDigits.h, t: !userDigits.t, o: !userDigits.o }}
-            />
-          </div>
-        )}
-
-        {/* Answer area */}
-        {renderAnswerArea()}
-
-        {/* Hint */}
-        <div style={{ textAlign: 'center' }}>
+        {/* Hint button */}
+        <div style={{ textAlign: 'center', flexShrink: 0 }}>
           <button
             onClick={handleUseHint}
-            style={{ backgroundColor: 'rgba(99,102,241,0.18)', border: '1.5px solid rgba(99,102,241,0.4)', color: '#c7d2fe', padding: '6px 16px', borderRadius: '12px', fontWeight: 900, cursor: 'pointer', fontSize: '13px', fontFamily: "'Fredoka One', Nunito, sans-serif", transition: 'all 0.2s' }}
-            onMouseEnter={(e) => e.currentTarget.style.backgroundColor = 'rgba(99,102,241,0.32)'}
-            onMouseLeave={(e) => e.currentTarget.style.backgroundColor = 'rgba(99,102,241,0.18)'}
+            style={{
+              backgroundColor: 'rgba(99,102,241,0.22)',
+              border: '2px solid rgba(99,102,241,0.5)',
+              color: '#c7d2fe',
+              padding: '8px 22px',
+              borderRadius: '50px',
+              fontWeight: 900,
+              cursor: 'pointer',
+              fontSize: 'clamp(14px, 2vh, 16px)',
+              fontFamily: "'Fredoka One', Nunito, sans-serif",
+              transition: 'all 0.2s',
+            }}
           >
             💡 Hint
           </button>
           {showHint && (
-            <div style={{ backgroundColor: 'rgba(250,204,21,0.08)', borderLeft: '3px solid var(--color-gold)', borderRadius: '10px', padding: '8px 12px', maxWidth: '420px', margin: '6px auto 0', fontSize: '13px', color: '#fff', fontWeight: 700, lineHeight: 1.4, textAlign: 'left' }}>
-              <strong style={{ color: 'var(--color-gold)' }}>Hint: </strong>{hintText}
+            <div style={{
+              backgroundColor: 'rgba(250,204,21,0.15)',
+              borderLeft: '4px solid #fbbf24',
+              borderRadius: '14px',
+              padding: '10px 18px',
+              maxWidth: '520px',
+              margin: '8px auto 0',
+              fontSize: 'clamp(14px, 2.1vh, 17px)',
+              color: '#ffffff',
+              fontWeight: 800,
+              lineHeight: 1.45,
+              textAlign: 'left',
+            }}>
+              <strong style={{ color: '#fbbf24', fontFamily: "'Fredoka One'" }}>Hint: </strong>{hintText}
             </div>
           )}
         </div>
 
-        {/* Feedback popup — SINGLE continue button for both correct & incorrect (test mode) */}
+        {/* Feedback Popup */}
         <FeedbackOverlay
           visible={feedbackVisible}
           isCorrect={feedbackCorrect}
           message={feedbackMsg}
           explanation={!feedbackCorrect ? currentQuestion.explanation : ''}
           onContinue={handleOverlayContinue}
-          onRetry={handleOverlayContinue}  // same handler — always advance
+          onRetry={handleOverlayContinue}
         />
       </div>
     );

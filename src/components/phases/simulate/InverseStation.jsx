@@ -102,11 +102,11 @@ export default function InverseStation({ audioEnabled, onCompleteStation }) {
       </div>
 
       <p style={{
-        fontSize: '15px',
-        fontWeight: 'bold',
-        color: '#cbd5e1',
-        backgroundColor: 'rgba(255, 255, 255, 0.03)',
-        border: '1px solid rgba(255, 255, 255, 0.08)',
+        fontSize: 'clamp(15px, 2.2vh, 18px)',
+        fontWeight: 900,
+        color: '#ffffff',
+        backgroundColor: 'rgba(255, 255, 255, 0.05)',
+        border: '1.5px solid rgba(255, 255, 255, 0.12)',
         padding: '12px 16px',
         borderRadius: '12px',
         lineHeight: '1.4'

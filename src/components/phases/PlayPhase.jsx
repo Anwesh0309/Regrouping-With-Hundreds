@@ -210,7 +210,7 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
         justifyContent: 'center',
         height: '100%',
         width: '100%',
-        padding: '0 var(--space-xs)',
+        padding: '0 12px',
         boxSizing: 'border-box',
         overflow: 'hidden',
       }}>
@@ -248,11 +248,11 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
         {/* 2x5 World Grid */}
         <div style={{
           display: 'grid',
-          gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: 'clamp(10px, 1.6vh, 14px)',
+          gridTemplateColumns: 'repeat(5, minmax(0, 1fr))',
+          gap: 'clamp(8px, 1.4vh, 14px)',
           width: '100%',
-          maxWidth: '920px',
-          margin: 'clamp(16px, 2.5vh, 28px) 0 0 0',
+          maxWidth: '1150px',
+          margin: 'clamp(14px, 2.2vh, 26px) 0 0 0',
           boxSizing: 'border-box',
         }}>
           {WORLDS.map((w) => {
@@ -266,25 +266,27 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: isUnlocked ? '16px 10px 14px 10px' : '22px 10px',
+                  padding: isUnlocked ? '16px 8px 14px 8px' : '22px 8px',
                   borderRadius: '20px',
-                  backgroundColor: isUnlocked ? 'rgba(236, 72, 153, 0.16)' : 'rgba(255, 255, 255, 0.04)',
-                  border: isUnlocked ? '2px solid rgba(244, 114, 182, 0.75)' : '1.5px solid rgba(255, 255, 255, 0.1)',
+                  backgroundColor: isUnlocked ? 'rgba(236, 72, 153, 0.16)' : 'rgba(255, 255, 255, 0.05)',
+                  border: isUnlocked ? '2px solid rgba(244, 114, 182, 0.75)' : '1.5px solid rgba(255, 255, 255, 0.12)',
                   boxShadow: isUnlocked ? '0 0 24px rgba(236, 72, 153, 0.35)' : 'none',
                   boxSizing: 'border-box',
                   transition: 'transform 0.2s ease, boxShadow 0.2s ease',
                   minHeight: 'clamp(125px, 19vh, 160px)',
                   backdropFilter: 'blur(10px)',
                   WebkitBackdropFilter: 'blur(10px)',
+                  width: '100%',
+                  overflow: 'hidden',
                 }}
               >
                 {/* Lock icon for locked worlds in top-right corner */}
                 {!isUnlocked && (
                   <div style={{
                     position: 'absolute',
-                    top: '10px',
-                    right: '10px',
-                    fontSize: '12px',
+                    top: '8px',
+                    right: '8px',
+                    fontSize: '11px',
                     color: 'rgba(255, 255, 255, 0.4)',
                     backgroundColor: 'rgba(255, 255, 255, 0.08)',
                     borderRadius: '50%',
@@ -300,7 +302,7 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
 
                 {/* World Icon */}
                 <div style={{
-                  fontSize: isUnlocked ? 'clamp(30px, 4.2vh, 38px)' : 'clamp(26px, 3.6vh, 32px)',
+                  fontSize: isUnlocked ? 'clamp(28px, 4vh, 36px)' : 'clamp(24px, 3.4vh, 30px)',
                   marginBottom: '6px',
                   filter: isUnlocked ? 'drop-shadow(0 4px 10px rgba(236,72,153,0.4))' : 'grayscale(0.2) opacity(0.55)',
                   lineHeight: 1,
@@ -311,13 +313,16 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                 {/* World Name */}
                 <div style={{
                   fontFamily: "'Fredoka One', Nunito, sans-serif",
-                  fontSize: 'clamp(14px, 2vh, 16px)',
+                  fontSize: 'clamp(13px, 1.8vh, 16px)',
                   fontWeight: 900,
                   color: isUnlocked ? '#ffffff' : 'rgba(255, 255, 255, 0.55)',
                   textAlign: 'center',
                   lineHeight: 1.2,
                   marginBottom: '3px',
                   whiteSpace: 'nowrap',
+                  overflow: 'hidden',
+                  textOverflow: 'ellipsis',
+                  maxWidth: '100%',
                 }}>
                   {w.name}
                 </div>
@@ -325,7 +330,7 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                 {/* Questions Range */}
                 <div style={{
                   fontFamily: "'Nunito', sans-serif",
-                  fontSize: 'clamp(11px, 1.5vh, 12px)',
+                  fontSize: 'clamp(11px, 1.4vh, 12px)',
                   fontWeight: 800,
                   color: isUnlocked ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.35)',
                   textAlign: 'center',
@@ -345,18 +350,19 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                       justifyContent: 'center',
                       gap: '5px',
                       marginTop: '10px',
-                      padding: '6px 20px',
+                      padding: '6px 18px',
                       borderRadius: '50px',
                       background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
                       border: 'none',
                       color: '#ffffff',
                       fontFamily: "'Fredoka One', Nunito, sans-serif",
                       fontWeight: 900,
-                      fontSize: 'clamp(11px, 1.6vh, 13px)',
+                      fontSize: 'clamp(11px, 1.5vh, 13px)',
                       boxShadow: '0 4px 14px rgba(236, 72, 153, 0.5)',
                       cursor: 'pointer',
                       letterSpacing: '0.04em',
                       transition: 'transform 0.15s ease, boxShadow 0.15s ease',
+                      whiteSpace: 'nowrap',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'scale(1.05)';
@@ -818,12 +824,48 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
     );
   };
 
+  if (mode === 'map') {
+    return (
+      <div style={{
+        width: '100%',
+        maxWidth: '1180px',
+        height: '100%',
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+      }}>
+        {renderWorldMap()}
+      </div>
+    );
+  }
+
+  if (mode === 'arena') {
+    return (
+      <div style={{
+        width: '100%',
+        maxWidth: '850px',
+        height: '100%',
+        margin: '0 auto',
+        display: 'flex',
+        flexDirection: 'column',
+        alignItems: 'center',
+        justifyContent: 'center',
+        boxSizing: 'border-box',
+        overflow: 'hidden',
+      }}>
+        {renderPlayArena()}
+      </div>
+    );
+  }
+
   return (
     <div className="glass-card phase-screen phase-screen--narrow" style={{ width: '100%' }}>
       <div className="phase-band phase-band--play" />
-      {mode === 'map'     && renderWorldMap()}
-      {mode === 'arena'   && renderPlayArena()}
-      {mode === 'summary' && renderWorldSummary()}
+      {renderWorldSummary()}
     </div>
   );
 }

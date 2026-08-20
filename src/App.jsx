@@ -124,16 +124,12 @@ function App() {
     <div className="app-container">
       {/* Floating background numbers */}
       <div className="floating-bg-container">
-        <span className="floating-bg-item" style={{ top: '12%', left:  '8%', fontSize: '52px', animationDelay:   '0s' }}>100</span>
-        <span className="floating-bg-item" style={{ top: '22%', left: '82%', fontSize: '56px', animationDelay:  '-4s' }}>347</span>
-        <span className="floating-bg-item" style={{ top: '65%', left: '12%', fontSize: '44px', animationDelay:  '-8s' }}>200</span>
-        <span className="floating-bg-item" style={{ top: '75%', left: '85%', fontSize: '64px', animationDelay:  '-2s' }}>999</span>
-        <span className="floating-bg-item" style={{ top: '40%', left:  '5%', fontSize: '38px', animationDelay: '-12s' }}>H</span>
-        <span className="floating-bg-item" style={{ top: '18%', left: '30%', fontSize: '36px', animationDelay:  '-6s' }}>T</span>
-        <span className="floating-bg-item" style={{ top: '80%', left: '48%', fontSize: '42px', animationDelay: '-10s' }}>O</span>
-        <span className="floating-bg-item" style={{ top: '50%', left: '90%', fontSize: '34px', animationDelay: '-14s' }}>123</span>
-        <span className="floating-bg-item" style={{ top:  '8%', left: '72%', fontSize: '46px', animationDelay: '-16s' }}>500</span>
-        <span className="floating-bg-item" style={{ top: '55%', left: '42%', fontSize: '40px', animationDelay:  '-9s' }}>639</span>
+        <span className="floating-bg-item" style={{ top: '4%', left:  '2%', fontSize: '76px', opacity: 0.1, animationDelay:   '0s' }}>50</span>
+        <span className="floating-bg-item" style={{ top: '5%', left: '15%', fontSize: '88px', opacity: 0.1, animationDelay:  '-4s' }}>3</span>
+        <span className="floating-bg-item" style={{ top: '4%', right: '14%', fontSize: '64px', opacity: 0.1, animationDelay:  '-8s' }}>1015</span>
+        <span className="floating-bg-item" style={{ top: '5%', right: '5%', fontSize: '88px', opacity: 0.1, animationDelay:  '-2s' }}>5</span>
+        <span className="floating-bg-item" style={{ top: '65%', left: '12%', fontSize: '44px', opacity: 0.05, animationDelay:  '-8s' }}>200</span>
+        <span className="floating-bg-item" style={{ top: '75%', left: '85%', fontSize: '64px', opacity: 0.05, animationDelay:  '-2s' }}>999</span>
       </div>
 
       {/* Header — hidden completely on intro phase */}

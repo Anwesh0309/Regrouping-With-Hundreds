@@ -187,7 +187,7 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
   // Reflect button only shows when ALL 10 worlds have been played at least once
   const allWorldsComplete = gameState.worldScores.every((s) => s !== null);
 
-  /* ── WORLD MAP SCREEN (Exact design match) ───────────────────────── */
+  /* ── WORLD MAP SCREEN (Exact screenshot design match) ───────────────────────── */
   const WORLDS = [
     { id: 0, name: 'Apple Orchard',  icon: '🍎', qRange: 'Questions 1–10' },
     { id: 1, name: 'Sticker Studio', icon: '⭐', qRange: 'Questions 11–20' },
@@ -218,23 +218,28 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
         <h3 style={{
           fontFamily: "'Fredoka One', Nunito, sans-serif",
           color: '#ffffff',
-          fontSize: 'clamp(24px, 4vh, 38px)',
+          fontSize: 'clamp(24px, 4vh, 36px)',
           fontWeight: 900,
           margin: 0,
           textAlign: 'center',
           lineHeight: 1.2,
           letterSpacing: '0.01em',
+          display: 'flex',
+          alignItems: 'center',
+          justifyContent: 'center',
+          gap: '10px',
         }}>
-          🎮 Play — Choose Your World!
+          <span>🎮</span>
+          <span>Practice — Choose Your World!</span>
         </h3>
 
         {/* Subtitle */}
         <p style={{
           fontFamily: "'Nunito', sans-serif",
-          color: '#94a3b8',
+          color: '#c4b5fd',
           fontSize: 'clamp(13px, 1.8vh, 16px)',
           fontWeight: 700,
-          margin: '4px 0 0 0',
+          margin: '6px 0 0 0',
           textAlign: 'center',
         }}>
           Answer questions in each world. Earn stars and XP!
@@ -244,7 +249,7 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
         <div style={{
           display: 'grid',
           gridTemplateColumns: 'repeat(5, 1fr)',
-          gap: 'clamp(10px, 1.8vh, 16px)',
+          gap: 'clamp(10px, 1.6vh, 14px)',
           width: '100%',
           maxWidth: '920px',
           margin: 'clamp(16px, 2.5vh, 28px) 0 0 0',
@@ -261,34 +266,43 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                   flexDirection: 'column',
                   alignItems: 'center',
                   justifyContent: 'center',
-                  padding: isUnlocked ? 'clamp(14px, 2.2vh, 22px) 12px clamp(12px, 1.8vh, 18px) 12px' : 'clamp(18px, 2.8vh, 26px) 12px',
-                  borderRadius: '24px',
-                  backgroundColor: isUnlocked ? 'rgba(236, 72, 153, 0.12)' : 'rgba(35, 25, 75, 0.45)',
-                  border: isUnlocked ? '2px solid rgba(244, 114, 182, 0.6)' : '1.5px solid rgba(255, 255, 255, 0.08)',
-                  boxShadow: isUnlocked ? '0 8px 32px rgba(236, 72, 153, 0.3)' : 'none',
+                  padding: isUnlocked ? '16px 10px 14px 10px' : '22px 10px',
+                  borderRadius: '20px',
+                  backgroundColor: isUnlocked ? 'rgba(236, 72, 153, 0.16)' : 'rgba(255, 255, 255, 0.04)',
+                  border: isUnlocked ? '2px solid rgba(244, 114, 182, 0.75)' : '1.5px solid rgba(255, 255, 255, 0.1)',
+                  boxShadow: isUnlocked ? '0 0 24px rgba(236, 72, 153, 0.35)' : 'none',
                   boxSizing: 'border-box',
                   transition: 'transform 0.2s ease, boxShadow 0.2s ease',
-                  minHeight: 'clamp(120px, 20vh, 170px)',
+                  minHeight: 'clamp(125px, 19vh, 160px)',
+                  backdropFilter: 'blur(10px)',
+                  WebkitBackdropFilter: 'blur(10px)',
                 }}
               >
-                {/* Lock icon for locked worlds */}
+                {/* Lock icon for locked worlds in top-right corner */}
                 {!isUnlocked && (
-                  <span style={{
+                  <div style={{
                     position: 'absolute',
-                    top: '12px',
-                    right: '14px',
-                    fontSize: '13px',
-                    color: 'rgba(255, 255, 255, 0.35)',
+                    top: '10px',
+                    right: '10px',
+                    fontSize: '12px',
+                    color: 'rgba(255, 255, 255, 0.4)',
+                    backgroundColor: 'rgba(255, 255, 255, 0.08)',
+                    borderRadius: '50%',
+                    width: '22px',
+                    height: '22px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
                   }}>
                     🔒
-                  </span>
+                  </div>
                 )}
 
                 {/* World Icon */}
                 <div style={{
-                  fontSize: isUnlocked ? 'clamp(32px, 4.5vh, 42px)' : 'clamp(28px, 4vh, 36px)',
-                  marginBottom: '8px',
-                  filter: isUnlocked ? 'drop-shadow(0 4px 12px rgba(236,72,153,0.4))' : 'grayscale(0.3) opacity(0.6)',
+                  fontSize: isUnlocked ? 'clamp(30px, 4.2vh, 38px)' : 'clamp(26px, 3.6vh, 32px)',
+                  marginBottom: '6px',
+                  filter: isUnlocked ? 'drop-shadow(0 4px 10px rgba(236,72,153,0.4))' : 'grayscale(0.2) opacity(0.55)',
                   lineHeight: 1,
                 }}>
                   {w.icon}
@@ -297,9 +311,9 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                 {/* World Name */}
                 <div style={{
                   fontFamily: "'Fredoka One', Nunito, sans-serif",
-                  fontSize: 'clamp(14px, 2.2vh, 18px)',
+                  fontSize: 'clamp(14px, 2vh, 16px)',
                   fontWeight: 900,
-                  color: isUnlocked ? '#ffffff' : 'rgba(255, 255, 255, 0.45)',
+                  color: isUnlocked ? '#ffffff' : 'rgba(255, 255, 255, 0.55)',
                   textAlign: 'center',
                   lineHeight: 1.2,
                   marginBottom: '3px',
@@ -311,16 +325,16 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                 {/* Questions Range */}
                 <div style={{
                   fontFamily: "'Nunito', sans-serif",
-                  fontSize: 'clamp(11px, 1.6vh, 13px)',
-                  fontWeight: 700,
-                  color: isUnlocked ? 'rgba(255, 255, 255, 0.7)' : 'rgba(255, 255, 255, 0.25)',
+                  fontSize: 'clamp(11px, 1.5vh, 12px)',
+                  fontWeight: 800,
+                  color: isUnlocked ? 'rgba(255, 255, 255, 0.85)' : 'rgba(255, 255, 255, 0.35)',
                   textAlign: 'center',
                   whiteSpace: 'nowrap',
                 }}>
                   {w.qRange}
                 </div>
 
-                {/* Unlocked PLAY button */}
+                {/* Unlocked PRACTICE button */}
                 {isUnlocked && (
                   <button
                     type="button"
@@ -329,31 +343,31 @@ export default function PlayPhase({ audioEnabled, gameState, setGameState, onCom
                       display: 'inline-flex',
                       alignItems: 'center',
                       justifyContent: 'center',
-                      gap: '6px',
-                      marginTop: '12px',
-                      padding: '8px 26px',
+                      gap: '5px',
+                      marginTop: '10px',
+                      padding: '6px 20px',
                       borderRadius: '50px',
                       background: 'linear-gradient(135deg, #ec4899 0%, #f43f5e 100%)',
                       border: 'none',
                       color: '#ffffff',
                       fontFamily: "'Fredoka One', Nunito, sans-serif",
                       fontWeight: 900,
-                      fontSize: 'clamp(13px, 1.8vh, 15px)',
-                      boxShadow: '0 4px 18px rgba(236, 72, 153, 0.55)',
+                      fontSize: 'clamp(11px, 1.6vh, 13px)',
+                      boxShadow: '0 4px 14px rgba(236, 72, 153, 0.5)',
                       cursor: 'pointer',
                       letterSpacing: '0.04em',
                       transition: 'transform 0.15s ease, boxShadow 0.15s ease',
                     }}
                     onMouseEnter={(e) => {
                       e.currentTarget.style.transform = 'scale(1.05)';
-                      e.currentTarget.style.boxShadow = '0 6px 24px rgba(236, 72, 153, 0.75)';
+                      e.currentTarget.style.boxShadow = '0 6px 20px rgba(236, 72, 153, 0.75)';
                     }}
                     onMouseLeave={(e) => {
                       e.currentTarget.style.transform = 'none';
-                      e.currentTarget.style.boxShadow = '0 4px 18px rgba(236, 72, 153, 0.55)';
+                      e.currentTarget.style.boxShadow = '0 4px 14px rgba(236, 72, 153, 0.5)';
                     }}
                   >
-                    ▶ PLAY
+                    ▶ PRACTICE
                   </button>
                 )}
               </div>

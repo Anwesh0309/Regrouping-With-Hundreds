@@ -32,3 +32,5 @@ dist-ssr
 parse_and_write_original.cjs
 search_exact_target.cjs
 scripts/
+
+.vercel
